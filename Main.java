@@ -24,7 +24,7 @@ public class Main{
         
 
 
-        str = "abba";
+        str = "cc";
 
         alphabet.add("a");
         alphabet.add("b");
