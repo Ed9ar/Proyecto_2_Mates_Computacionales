@@ -1,1 +1,1 @@
-# Proyecto_2_Mates_Computacionales
+# Proyecto_1_Mates_Comp
