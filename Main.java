@@ -8,9 +8,9 @@ import java.util.*;
  * @author Alfredo Osuna Torres
  * @author Edgar Lopez Valdez
  * 
- * The following code creates a Window in which the user writes the name of a .txt file with the specifications 
- * to create an NDFA-lambda, once the txt is processed, the user can switch between txt files within the directory
- * and validate if a string belongs to the language.
+ * The following code creates a Window in which the user writes the name of a .txt file with the production rules of a grammar
+ * once the txt is processed, the user can switch between txt files within the directory
+ * and validate if a string belongs to the language through top down parsing.
  */
 
 public class Main{
@@ -18,13 +18,12 @@ public class Main{
        
         HashMap<String, ArrayList<String>> productionRules = new HashMap<String, ArrayList<String>>();
         ArrayList alphabet = new ArrayList<String>();
-        String str;
-        ArrayList nonTerminal = new ArrayList<String>();
-        Pushdown pushdown = new Pushdown<>("S");
+ 
+        String str, root;
         
-
-
-        str = "cc";
+        ArrayList nonTerminal = new ArrayList<String>();
+        
+        str = "babbbabbaa";
 
         alphabet.add("a");
         alphabet.add("b");
@@ -45,16 +44,58 @@ public class Main{
         productionRules.get("B").add("bBB");
         productionRules.get("B").add("b");
 
+
+        System.out.println(" ");
+        System.out.println("Reglas de producción");
+        System.out.println(" ");
         System.out.println(productionRules);
+        System.out.println(" ");
 
-        pushdown.productionRules = productionRules;
-        pushdown.Validate(str);
-        //pushdown.printStacks();
-
-        if(str.length() == 0){
-            System.out.println("The string is accepted by te automata");
+   
+        System.out.println("STRING");
+        System.out.println(str);
+        
+        root = "S";
+        int max = 0;
+        for(int i = 0; i < productionRules.size();i++){
+            if(productionRules.get(nonTerminal.get(i)).size() > max){
+                max = productionRules.get(nonTerminal.get(i)).size();
+            }
         }
+
+        System.out.println(max);
+        Topdown arbol = new Topdown(max);
+
+        arbol.productionRules = productionRules;
+        arbol.nonTerminal = nonTerminal;
+
+        for(int i = 0; i < productionRules.get(root).size();i++){
+            Nodo a = new Nodo(productionRules.get(root).get(i));
+            arbol.root.addChild(a);
+        }
+
+        arbol.aceptado = false;
+        arbol.validarString(arbol.root, str);
+        
+
+        System.out.println(" ");
+        System.out.println("ARBOOOOL");
+        arbol.print(arbol.root, str);
+
+        System.out.println(" ");
+        System.out.println(arbol.aceptado);
+
+        
+        
     }
+
 }
 
-    
+
+
+
+
+
+
+
+
