@@ -5,7 +5,7 @@ import java.util.*;
 
 /**
  * @author Alfredo Osuna Torres
- * @author Edgar Lopez Valdez
+ * @author Edgar Lopez Valdes
  * 
  * The following code creates a Window in which the user writes the name of a .txt file with the production rules of a grammar
  * once the txt is processed, the user can switch between txt files within the directory
