@@ -1,5 +1,8 @@
 import java.io.File;
 
+import javafx.scene.paint.Color;
+
+
 import java.io.FileNotFoundException;
 import java.util.*;
 import javax.sound.midi.Receiver;
@@ -53,11 +56,12 @@ public class Ventana extends JFrame{
         for(int i = 0; i < 1; i++) { 
             for(int j = 0; j < 3; j++) {
                 square[i][j] = new JButton();
+                square[i][j].setOpaque(true);
                 square[i][j].addActionListener(new BotonListener());
                 square[i][j].setLayout(new FlowLayout());
-                square[i][j].setBackground(Color.PINK);
+                //square[i][j].setBackground(Color.PINK);
 
-                square[i][j].setBorder(BorderFactory.createLineBorder(Color.black));
+                //square[i][j].setBorder(BorderFactory.createLineBorder(Color.black));
                 
                 panelBotones.add(square[i][j]);
             }
@@ -83,9 +87,7 @@ public class Ventana extends JFrame{
             panelOperaciones.removeAll();
         
             if (e.getSource() == square[0][0]) {//Si se selecciona test1
-                square[0][0].setBackground(Color.YELLOW);
-                square[0][1].setBackground(Color.PINK);
-                square[0][2].setBackground(Color.PINK);
+                
                 System.out.println("Presionaste test1");
                 ops = new JLabel("Validar String");
                 ops.setPreferredSize( new Dimension(200, 50  ) );
@@ -93,18 +95,14 @@ public class Ventana extends JFrame{
 
             }
             else if(e.getSource() == square[0][1]) {//Si se selecciona test2
-                square[0][1].setBackground(Color.YELLOW);
-                square[0][0].setBackground(Color.PINK);
-                square[0][2].setBackground(Color.PINK);
+                
                 System.out.println("Presionaste test2");
                 ops = new JLabel("Validar String");
                 ops.setPreferredSize( new Dimension(200, 50  ) );
 	            panelOperaciones.add(ops);
             }
             else if(e.getSource() == square[0][2]) {//Si se selecciona test3
-                square[0][2].setBackground(Color.YELLOW);
-                square[0][1].setBackground(Color.PINK);
-                square[0][0].setBackground(Color.PINK);
+                
                 System.out.println("Presionaste test3");
                 ops = new JLabel("Validar String");
                 ops.setPreferredSize( new Dimension(200, 50  ) );
@@ -181,10 +179,13 @@ public class Ventana extends JFrame{
             val = new JLabel("Ir");
             stringVal.addActionListener(new BotonListener());
             stringVal.add(val);
+            //stringVal.setBackground(Color.YELLOW);
+            
             textField.setPreferredSize(new Dimension(200,50));
             
             panelOperaciones.add(textField);
             panelOperaciones.add(stringVal);
+
 
             add(panelOperaciones);
             repaint();
