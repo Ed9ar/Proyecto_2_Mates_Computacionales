@@ -16,13 +16,24 @@ public class Topdown {
 	int counter1 =0;
 	String newStr = "";
 	String prefix, sufix,letter;
-	public Nodo root = new Nodo("S");
+	Nodo root = new Nodo("S");
 
+	/**
+     * Constructor
+     * @param maximum It is the maximum number of children a Node can have
+	 * Obtained by the max number of productions
+     */
 	public Topdown(int maximum){
 		Nodo.chilNum=maximum;
 		root.parent=null;
 	}
 
+	/**
+     * This method prints the value of every node in the tree
+     * @param root It is the node to analyze in the recursion 
+	 * @param str The string is the element that will be compared
+	 * Changes the acceptance value of a string which determines its belonging to a language
+     */
 	public void print(Nodo root, String str){
 		
 		System.out.println("");
@@ -42,6 +53,17 @@ public class Topdown {
 		}
 
 	}
+
+	/**
+     * This method validates the string to analize
+	 * The prefix is obtained
+	 * The transaction is obtained
+	 * The suffix is obtained
+	 * All prefix, transaction and sufix are put together and added as a child Node
+     * @param root It is the node to analyze in the recursion 
+	 * @param str The string is the element that will be compared to the product
+     * 
+     */
 
 	public void validarString(Nodo root, String str){
 		System.out.println(" ");

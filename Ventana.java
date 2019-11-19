@@ -44,23 +44,18 @@ public class Ventana extends JFrame{
         
         panelBotones= new JPanel();
         panelBotones.setLayout(new FlowLayout());
-        //panelBotones.setSize(400, height);
+        
         selectText = new JLabel("Select a test file");
         
         panelBotones.add(selectText);
 
 
-        //loop para crear los botones para seleccionar archivo
         for(int i = 0; i < 1; i++) { 
             for(int j = 0; j < 3; j++) {
                 square[i][j] = new JButton();
                 square[i][j].setOpaque(true);
                 square[i][j].addActionListener(new BotonListener());
                 square[i][j].setLayout(new FlowLayout());
-                //square[i][j].setBackground(Color.PINK);
-
-                //square[i][j].setBorder(BorderFactory.createLineBorder(Color.black));
-                
                 panelBotones.add(square[i][j]);
             }
             
@@ -86,6 +81,10 @@ public class Ventana extends JFrame{
   
                 File archivo = new File (nombreArchivo);
                 try{
+                    /**
+                    * Scan the user selected file
+                    * Add .txt to the string 
+                    */
                     scanner = new Scanner(archivo);
                     int numDeLinea=1;
                     while(scanner.hasNextLine()){
@@ -98,7 +97,7 @@ public class Ventana extends JFrame{
                         
                         switch (numDeLinea){
                             /**
-                             * Adds all the states of the NDFA
+                             * Adds all the states of the pushdown
                              */
                             case 1:
                                 delimitar.useDelimiter("\\s*,|=>\\s*");
@@ -119,7 +118,7 @@ public class Ventana extends JFrame{
                                 }
                             break;
                             /**
-                             * Adds the initial state of the NDFA
+                             * Adds root
                              */
                             case 3:
                                 root = delimitar.next();
@@ -127,7 +126,7 @@ public class Ventana extends JFrame{
                                 
                             break;
                             /**
-                             * Adds all the final states of the NDFA
+                             * Adds all the final states 
                              */
                             default:
                                 ArrayList <String> arrStr = new ArrayList<String>();
@@ -189,17 +188,21 @@ public class Ventana extends JFrame{
 
 	public class BotonListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-            
+            /**
+             * This will clean the pane if it has something in it 
+             */
             panelOperaciones.removeAll();
             try{
                 panelReglas.removeAll();
             }catch(NullPointerException ex){
 
             }
-
             
-        
-            if (e.getSource() == square[0][0]) {//Si se selecciona test1
+            /**
+             * This will add the corresponding 
+             * production rules for test1
+             */
+            if (e.getSource() == square[0][0]) {
                 nombre = "test1";
                 crearArbol();
                 System.out.println("Presionaste test1");
@@ -219,6 +222,10 @@ public class Ventana extends JFrame{
                 panelOperaciones.add(stringVal);
 
             }
+            /**
+             * This will add the corresponding 
+             * production rules for test2
+             */
             else if(e.getSource() == square[0][1]) {//Si se selecciona test2
                 nombre = "test2";
                 crearArbol();
@@ -238,6 +245,10 @@ public class Ventana extends JFrame{
                 panelOperaciones.add(textField);
                 panelOperaciones.add(stringVal);
             }
+            /**
+             * This will add the corresponding 
+             * production rules for test3
+             */
             else if(e.getSource() == square[0][2]) {//Si se selecciona test3
                 nombre = "test3";
                 crearArbol();
@@ -258,7 +269,10 @@ public class Ventana extends JFrame{
                 panelOperaciones.add(stringVal);
                 
             }
-            else if(e.getSource() == stringVal){//Si se presiona boton de ir para validar string
+            /**
+             * This will call the validate method for the topdown
+             */
+            else if(e.getSource() == stringVal){
                 str = textField.getText();
                 arbol.validarString(arbol.root, str);
 
