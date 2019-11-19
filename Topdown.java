@@ -84,15 +84,8 @@ public class Topdown {
 
 				sufix = newStr;
 
-				System.out.println("Letter");
-				System.out.println(letter);
-
 				valido = true;
-
-				System.out.println(prefix);
-				System.out.println(sufix);
-				
-			
+	
 				//Si el prefijo es igual al prefijo del string se aniaden los hijos
 				if(counter > 0){
 					if(prefix.length() <= str.length()){
@@ -107,18 +100,16 @@ public class Topdown {
 						}
 					}
 					
-					System.out.println(valido);
+					
 					
 					//Se junta prefijo, reglas de produccion y sufijo en los nodos que seran hijos
 					if(valido == true){
 						for(int i = 0; i < productionRules.get(letter).size(); i++){
-							if(productionRules.get(letter).get(i) == "lmd"){
-								System.out.println("Inserting : " + prefix + sufix);
+							if(productionRules.get(letter).get(i).equals("lmd")){
 								Nodo nodoNuevo = new Nodo(prefix  + sufix);
 								root.addChild(nodoNuevo);
 							}
 							else{
-								System.out.println("Inserting : " + prefix + productionRules.get(letter).get(i) + sufix);
 								Nodo nodoNuevo = new Nodo(prefix + productionRules.get(letter).get(i) + sufix);
 								root.addChild(nodoNuevo);
 							}

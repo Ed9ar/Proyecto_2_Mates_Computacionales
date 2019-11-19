@@ -1,8 +1,5 @@
 import java.io.File;
-
 import javafx.scene.paint.Color;
-
-
 import java.io.FileNotFoundException;
 import java.util.*;
 import javax.sound.midi.Receiver;
@@ -10,25 +7,26 @@ import javax.swing.JFrame;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-
+import java.util.Scanner;
 import java.util.*;
 
 
 public class Ventana extends JFrame{
-    private JPanel panelOperaciones,panelBotones;
+    private JPanel panelOperaciones,panelBotones, panelReglas;
     private JTextField textField;
     private JButton[][] square = new JButton[4][3];
-    private JButton stringVal;
-    private JLabel resul, selectText, ops, val;
+    private JButton stringVal, back;
+    private JLabel resul, selectText, ops, val, ag;
+    Topdown arbol;
     String x,y,symbol, result;
-    private JLabel Uno,Dos,Tres, checarString;
+    private JLabel Uno,Dos,Tres, checarString, aceptado;
 
     HashMap<String, ArrayList<String>> productionRules = new HashMap<String, ArrayList<String>>();
     ArrayList alphabet = new ArrayList<String>();
-
-    String str, root;
-    
+    String str, nombre, root = "";   
+    Scanner scanner = new Scanner(System.in);
     ArrayList nonTerminal = new ArrayList<String>();
+    ArrayList strings = new ArrayList<String>();
 
     
 	public Ventana(){
@@ -79,56 +77,83 @@ public class Ventana extends JFrame{
         
         add(panelBotones, BorderLayout.CENTER);
                 
-	}
+    }
+    
+    public void crearArbol(){
+        productionRules = new HashMap<String, ArrayList<String>>();
+        strings = new ArrayList<String>();
+        String nombreArchivo = nombre + ".txt";
+  
+                File archivo = new File (nombreArchivo);
+                try{
+                    scanner = new Scanner(archivo);
+                    int numDeLinea=1;
+                    while(scanner.hasNextLine()){
+                        String linea = scanner.nextLine();
+                        Scanner delimitar = new Scanner(linea);
+                        /**
+                         * Changes case each line of the file 
+                         * After line 4 the file shows all the transactions
+                         */
+                        
+                        switch (numDeLinea){
+                            /**
+                             * Adds all the states of the NDFA
+                             */
+                            case 1:
+                                delimitar.useDelimiter("\\s*,|=>\\s*");
+                                while(delimitar.hasNext()){
+                                    String l = delimitar.next();
+                                    nonTerminal.add(l);
+                                    productionRules.put(l, new ArrayList<String>());
+                                }
+                            break; 
+                            /**
+                             * Adds the alphabet of the language 
+                             */ 
+                            case 2:
+                                delimitar.useDelimiter("\\s*,|=>\\s*");
+                                
+                                while(delimitar.hasNext()){
+                                    alphabet.add(delimitar.next());
+                                }
+                            break;
+                            /**
+                             * Adds the initial state of the NDFA
+                             */
+                            case 3:
+                                root = delimitar.next();
+                            
+                                
+                            break;
+                            /**
+                             * Adds all the final states of the NDFA
+                             */
+                            default:
+                                ArrayList <String> arrStr = new ArrayList<String>();
+                                delimitar.useDelimiter("\\s*,|->\\s*");
+                                while(delimitar.hasNext()){
+                                    String s = delimitar.next();
+                                    arrStr.add(s);
+                                }
+                                productionRules.get(arrStr.get(0)).add(arrStr.get(1));
+                                strings.add(linea);
+                            break;
+                            /**
+                             * Adds the transactions to the corresponding key
+                             */
+                            }
+                        numDeLinea++;
+                    }
+                    scanner.close();
+                }
+                catch(FileNotFoundException ex){
+                    /**
+                    * Catch the exception if the file does not exist
+                    */
+                }
+                scanner.close();
 
-	public class BotonListener implements ActionListener{
-		public void actionPerformed(ActionEvent e){
-
-            panelOperaciones.removeAll();
-        
-            if (e.getSource() == square[0][0]) {//Si se selecciona test1
-                
-                System.out.println("Presionaste test1");
-                ops = new JLabel("Validar String");
-                ops.setPreferredSize( new Dimension(200, 50  ) );
-	            panelOperaciones.add(ops);
-
-            }
-            else if(e.getSource() == square[0][1]) {//Si se selecciona test2
-                
-                System.out.println("Presionaste test2");
-                ops = new JLabel("Validar String");
-                ops.setPreferredSize( new Dimension(200, 50  ) );
-	            panelOperaciones.add(ops);
-            }
-            else if(e.getSource() == square[0][2]) {//Si se selecciona test3
-                
-                System.out.println("Presionaste test3");
-                ops = new JLabel("Validar String");
-                ops.setPreferredSize( new Dimension(200, 50  ) );
-	            panelOperaciones.add(ops);
-                
-            }
-            else if(e.getSource() == stringVal){//Si se presiona boton de ir para validar string
-                str = textField.getText();
-                alphabet.add("a");
-                alphabet.add("b");
-                
-                nonTerminal.add("S");
-                nonTerminal.add("A");
-                nonTerminal.add("B");
-                
-                productionRules.put("S", new ArrayList<String>());
-                productionRules.put("A", new ArrayList<String>());
-                productionRules.put("B", new ArrayList<String>());
-                
-                productionRules.get("S").add("AbB");
-                productionRules.get("S").add("bbS");
-                productionRules.get("A").add("bAb");
-                productionRules.get("A").add("a");
-                productionRules.get("B").add("AaA");
-                productionRules.get("B").add("bBB");
-                productionRules.get("B").add("b");
 
 
                 System.out.println(" ");
@@ -137,9 +162,7 @@ public class Ventana extends JFrame{
                 System.out.println(productionRules);
                 System.out.println(" ");
 
-        
-                System.out.println("STRING");
-                System.out.println(str);
+
                 
                 root = "S";
                 int max = 0;
@@ -150,7 +173,8 @@ public class Ventana extends JFrame{
                 }
 
                 System.out.println(max);
-                Topdown arbol = new Topdown(max);
+                
+                arbol = new Topdown(max);
 
                 arbol.productionRules = productionRules;
                 arbol.nonTerminal = nonTerminal;
@@ -161,8 +185,82 @@ public class Ventana extends JFrame{
                 }
 
                 arbol.aceptado = false;
-                arbol.validarString(arbol.root, str);
+    }
+
+	public class BotonListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+            
+            panelOperaciones.removeAll();
+            try{
+                panelReglas.removeAll();
+            }catch(NullPointerException ex){
+
+            }
+
+            
+        
+            if (e.getSource() == square[0][0]) {//Si se selecciona test1
+                nombre = "test1";
+                crearArbol();
+                System.out.println("Presionaste test1");
+                ops = new JLabel("Validar String");
+                ops.setPreferredSize( new Dimension(200, 50  ) );
+                panelOperaciones.add(ops);
+                textField=new JTextField();
+                stringVal = new JButton();
+                val = new JLabel("Ir");
+                stringVal.addActionListener(new BotonListener());
+                stringVal.add(val);
+                //stringVal.setBackground(Color.YELLOW);
                 
+                textField.setPreferredSize(new Dimension(200,50));
+                
+                panelOperaciones.add(textField);
+                panelOperaciones.add(stringVal);
+
+            }
+            else if(e.getSource() == square[0][1]) {//Si se selecciona test2
+                nombre = "test2";
+                crearArbol();
+                System.out.println("Presionaste test2");
+                ops = new JLabel("Validar String");
+                ops.setPreferredSize( new Dimension(200, 50  ) );
+                panelOperaciones.add(ops);
+                textField=new JTextField();
+                stringVal = new JButton();
+                val = new JLabel("Ir");
+                stringVal.addActionListener(new BotonListener());
+                stringVal.add(val);
+                //stringVal.setBackground(Color.YELLOW);
+                
+                textField.setPreferredSize(new Dimension(200,50));
+                
+                panelOperaciones.add(textField);
+                panelOperaciones.add(stringVal);
+            }
+            else if(e.getSource() == square[0][2]) {//Si se selecciona test3
+                nombre = "test3";
+                crearArbol();
+                System.out.println("Presionaste test3");
+                ops = new JLabel("Validar String");
+                ops.setPreferredSize( new Dimension(200, 50  ) );
+                panelOperaciones.add(ops);
+                textField=new JTextField();
+                stringVal = new JButton();
+                val = new JLabel("Ir");
+                stringVal.addActionListener(new BotonListener());
+                stringVal.add(val);
+                //stringVal.setBackground(Color.YELLOW);
+                
+                textField.setPreferredSize(new Dimension(200,50));
+                
+                panelOperaciones.add(textField);
+                panelOperaciones.add(stringVal);
+                
+            }
+            else if(e.getSource() == stringVal){//Si se presiona boton de ir para validar string
+                str = textField.getText();
+                arbol.validarString(arbol.root, str);
 
                 System.out.println(" ");
                 System.out.println("ARBOOOOL");
@@ -170,23 +268,40 @@ public class Ventana extends JFrame{
 
                 System.out.println(" ");
                 System.out.println(arbol.aceptado);
-                ops = new JLabel("Validar String");
-                ops.setPreferredSize( new Dimension(200, 50  ) );
-	            panelOperaciones.add(ops);
+
+                
+                if(arbol.aceptado == true){
+                    aceptado = new JLabel("The string "+str+" is accepted by the language");
+                }
+                else if(arbol.aceptado == false){
+                    aceptado = new JLabel("The string "+str+" is not accepted by the language");
+                }
+                
+                
+                panelOperaciones.add(aceptado);
+            
             }
-            textField=new JTextField();
-            stringVal = new JButton();
-            val = new JLabel("Ir");
-            stringVal.addActionListener(new BotonListener());
-            stringVal.add(val);
-            //stringVal.setBackground(Color.YELLOW);
             
-            textField.setPreferredSize(new Dimension(200,50));
-            
-            panelOperaciones.add(textField);
-            panelOperaciones.add(stringVal);
+            panelReglas= new JPanel();
+            int sizes = strings.size();
 
+            panelReglas.setLayout(new GridLayout(sizes,1));
 
+            ops = new JLabel("Production Rules :");
+            panelReglas.add(ops);
+
+            ops = new JLabel("                                       ");
+            panelReglas.add(ops);
+
+            for(int i = 0; i < sizes; i++){
+                ops = new JLabel(String.valueOf(strings.get(i)));
+                panelReglas.add(ops);
+            }
+                
+
+            System.out.println(sizes);
+            System.out.println(strings);
+            add(panelReglas);
             add(panelOperaciones);
             repaint();
             revalidate();

@@ -1,13 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
-import javax.sound.midi.Receiver;
-import javax.swing.JFrame;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 
-import java.util.*;
 
 /**
  * @author Alfredo Osuna Torres
@@ -18,12 +12,15 @@ import java.util.*;
  * and validate if a string belongs to the language through top down parsing.
  */
 
-public class Main extends JFrame{
+public class Main{
     public static void main(String[] args) {
-        Ventana ventana = new Ventana();
+        Ventana ventana = new Ventana();    
     }
 
+
 }
+
+
 
 
 
